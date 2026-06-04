@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { MessageCircle, ShoppingBag, Trash2 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
@@ -7,6 +7,7 @@ import { formatCurrency } from '@/utils/currency';
 import { buildWhatsAppMessage, buildWhatsAppUrl } from '@/utils/whatsapp';
 import { storeConfig } from '@/data/config';
 import type { CheckoutFormData } from '@/types/product';
+import { trackBeginCheckout, trackWhatsAppClick } from '@/utils/analytics';
 
 const initialForm: CheckoutFormData = {
   name: '',
@@ -19,6 +20,15 @@ export function Checkout() {
   const { items, subtotal, updateQuantity, removeItem, clearCart } = useCart();
   const [form, setForm] = useState<CheckoutFormData>(initialForm);
   const [error, setError] = useState('');
+
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const trackedCheckout = useRef(false);
+
+  useEffect(() => {
+    if (items.length === 0 || trackedCheckout.current) return;
+    trackedCheckout.current = true;
+    trackBeginCheckout({ value: subtotal, itemCount });
+  }, [items.length, subtotal, itemCount]);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -38,6 +48,8 @@ export function Checkout() {
       setError('Informe o endereço ou marque retirada no local.');
       return;
     }
+
+    trackWhatsAppClick('checkout');
 
     const message = buildWhatsAppMessage(items, subtotal, form);
     const url = buildWhatsAppUrl(storeConfig.whatsapp, message);

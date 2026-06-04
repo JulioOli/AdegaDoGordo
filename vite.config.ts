@@ -10,4 +10,9 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  server: {
+    host: true,
+    // Permite acesso via ngrok (o subdomínio muda a cada sessão no plano grátis)
+    allowedHosts: true,
+  },
 });

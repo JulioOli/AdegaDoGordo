@@ -8,6 +8,8 @@ import {
   type ReactNode,
 } from 'react';
 import type { CartItem, Product } from '@/types/product';
+import { CATEGORY_LABELS } from '@/types/product';
+import { trackAddToCart } from '@/utils/analytics';
 
 const STORAGE_KEY = 'adega-cart';
 
@@ -73,6 +75,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return [...prev, { product, quantity }];
     });
     setIsOpen(true);
+    trackAddToCart({
+      itemId: product.id,
+      itemName: product.name,
+      price: product.price,
+      quantity,
+      category: CATEGORY_LABELS[product.category],
+    });
   }, []);
 
   const removeItem = useCallback((productId: string) => {

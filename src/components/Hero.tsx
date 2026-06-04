@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, MessageCircle } from 'lucide-react';
 import { storeConfig } from '@/data/config';
+import { trackWhatsAppClick } from '@/utils/analytics';
 
 export function Hero() {
   const whatsappUrl = `https://wa.me/${storeConfig.whatsapp}`;
@@ -42,6 +43,7 @@ export function Hero() {
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackWhatsAppClick('hero')}
               className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-white/40 px-8 py-3.5 font-semibold text-white transition hover:border-white hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               <MessageCircle className="h-5 w-5" />

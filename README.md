@@ -36,6 +36,68 @@ npm run build
 npm run preview
 ```
 
+## Hospedar no Firebase (link fixo na internet)
+
+O **Firebase** é uma plataforma do Google. Para este site usamos só o **Firebase Hosting**: ele guarda os arquivos estáticos gerados pelo `npm run build` (pasta `dist/`) em servidores na nuvem e entrega um link público (ex.: `https://seu-projeto.web.app`).
+
+Diferente do ngrok, o site fica no ar **sem** seu PC ligado.
+
+### 1. Criar projeto no Firebase
+
+1. Acesse [https://console.firebase.google.com](https://console.firebase.google.com)
+2. **Adicionar projeto** → nome sugerido: `adega-do-gordo`
+3. Pode desativar o Google Analytics se quiser (opcional no protótipo)
+
+### 2. Instalar a CLI e entrar na conta Google
+
+```bash
+npm install -g firebase-tools
+firebase login
+```
+
+Abre o navegador para você autorizar com a conta Google.
+
+### 3. Vincular este repositório ao projeto
+
+Na pasta do projeto:
+
+```bash
+cd ~/Documents/Projects/Adega
+firebase use --add
+```
+
+Escolha o projeto que criou no passo 1. Isso atualiza o arquivo `.firebaserc`.
+
+### 4. Publicar o site
+
+```bash
+npm run deploy
+```
+
+Ou em dois passos:
+
+```bash
+npm run build
+firebase deploy --only hosting
+```
+
+No final, o terminal mostra a URL, por exemplo:
+
+- `https://adgdogordo.web.app`
+- `https://adgdogordo.firebaseapp.com`
+
+### Atualizar o site depois de mudanças
+
+Sempre que alterar código ou produtos:
+
+```bash
+npm run deploy
+```
+
+### Horários da loja
+
+Edite o array `storeHours` em [`src/data/config.ts`](src/data/config.ts).
+
 ## Como editar o catálogo
 
 Edite o arquivo [`src/data/products.ts`](src/data/products.ts) com os produtos reais da adega.
@@ -54,6 +116,50 @@ Cada produto segue este formato:
   featured: true, // opcional — aparece nos destaques da Home
 }
 ```
+
+## Google Analytics (acompanhar uso do site)
+
+O site pede consentimento de cookies (LGPD) e só carrega o Analytics se o visitante aceitar.
+
+### 1. Obter o Measurement ID
+
+1. [Firebase Console](https://console.firebase.google.com) → projeto **adgdogordo**
+2. Engrenagem → **Configurações do projeto** → aba **Integrações**
+3. Se não houver Google Analytics, vincule ou crie um fluxo GA4
+4. Copie o **Measurement ID** (formato `G-XXXXXXXXXX`)
+
+Também em [analytics.google.com](https://analytics.google.com) → Admin → Fluxos de dados → Web.
+
+### 2. Configurar no projeto
+
+```bash
+cp .env.example .env.local
+```
+
+Edite `.env.local`:
+
+```
+VITE_GA_MEASUREMENT_ID=G-SEU_ID_AQUI
+```
+
+### 3. Publicar com analytics ativo
+
+O ID é embutido no build — rode o deploy **depois** de criar o `.env.local`:
+
+```bash
+npm run deploy
+```
+
+### Eventos registrados
+
+| Evento | Quando |
+|--------|--------|
+| `page_view` | Troca de página (Início, Catálogo, Checkout) |
+| `add_to_cart` | Adicionar produto à sacola |
+| `begin_checkout` | Abrir a página de finalizar pedido |
+| `whatsapp_click` | Clique no WhatsApp (hero, rodapé ou checkout) |
+
+Relatórios em [analytics.google.com](https://analytics.google.com) → Relatórios → Tempo real / Engajamento.
 
 ## Configurações da loja
 

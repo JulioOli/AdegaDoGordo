@@ -1,5 +1,7 @@
 import { Instagram, MapPin, Clock, MessageCircle } from 'lucide-react';
 import { storeConfig } from '@/data/config';
+import { StoreHours } from "@/components/StoreHours";
+import { trackWhatsAppClick } from "@/utils/analytics";
 
 export function Footer() {
   const whatsappUrl = `https://wa.me/${storeConfig.whatsapp}`;
@@ -31,14 +33,15 @@ export function Footer() {
             <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand-gold" />
             {storeConfig.address}
           </p>
-          <p className="flex items-start gap-2 text-white/85">
+          <div className="flex items-start gap-2 text-white/85">
             <Clock className="mt-0.5 h-4 w-4 shrink-0 text-brand-gold" />
-            {storeConfig.hours}
-          </p>
+            <StoreHours itemClassName="text-white/85" />
+          </div>
           <a
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackWhatsAppClick("footer")}
             className="inline-flex items-center gap-2 text-white/85 transition hover:text-brand-gold"
           >
             <MessageCircle className="h-4 w-4 text-brand-gold" />
@@ -63,7 +66,8 @@ export function Footer() {
       </div>
 
       <div className="border-t border-white/10 py-4 text-center text-xs text-white/60">
-        © {new Date().getFullYear()} {storeConfig.name}. Protótipo para apresentação.
+        © {new Date().getFullYear()} {storeConfig.name}. Site desenvolvido por
+        @iioulos
       </div>
     </footer>
   );

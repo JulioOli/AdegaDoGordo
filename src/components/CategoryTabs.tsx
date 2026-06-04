@@ -21,7 +21,7 @@ export function CategoryTabs({ active, onChange }: CategoryTabsProps) {
       role="tablist"
       aria-label="Categorias do catálogo"
     >
-      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
+      <div className="container-app flex flex-wrap justify-center gap-2 pb-1">
         {tabs.map((tab) => {
           const isActive = active === tab.id;
           return (

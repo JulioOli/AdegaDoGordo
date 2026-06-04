@@ -1,5 +1,6 @@
 import { Clock, MapPin, Truck } from 'lucide-react';
 import { storeConfig } from '@/data/config';
+import { StoreHours } from '@/components/StoreHours';
 
 const highlights = [
   {
@@ -9,8 +10,8 @@ const highlights = [
   },
   {
     icon: Clock,
-    title: 'Atendimento ágil',
-    text: storeConfig.hours,
+    title: 'Horário de funcionamento',
+    content: <StoreHours itemClassName="text-brand-charcoal/75" />,
   },
   {
     icon: MapPin,
@@ -32,7 +33,7 @@ export function AboutSection() {
       </div>
 
       <div className="mt-12 grid gap-6 sm:grid-cols-3">
-        {highlights.map(({ icon: Icon, title, text }) => (
+        {highlights.map(({ icon: Icon, title, text, content }) => (
           <article
             key={title}
             className="rounded-2xl border border-brand-green/10 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
@@ -43,7 +44,11 @@ export function AboutSection() {
             <h3 className="font-display text-xl uppercase tracking-wide text-brand-green">
               {title}
             </h3>
-            <p className="mt-2 text-sm leading-relaxed text-brand-charcoal/75">{text}</p>
+            {content ? (
+              <div className="mt-2 text-sm leading-relaxed">{content}</div>
+            ) : (
+              <p className="mt-2 text-sm leading-relaxed text-brand-charcoal/75">{text}</p>
+            )}
           </article>
         ))}
       </div>
